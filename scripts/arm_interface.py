@@ -60,8 +60,8 @@ class ArmTeleop:
         self.labelS1Headers.config(text="Joint        |     Velocity      |    Button Clockwise   |Button Counterclockwise")
         #self.labelS1Headers.grid(row=3, column=0, columnspan=4, sticky="nsew")                
         self.buttonsSection1(1, 4, 0, "Eje 1")
-        self.S1buttonj1w.bind("<ButtonPress-1>", lambda event: self.pressed("q1",1))        
-        self.S1buttonj1c.bind("<ButtonPress-1>", lambda event: self.pressed("q1",-1))
+        self.S1buttonj1w.bind("<ButtonPress-1>", lambda event: self.pressed(float(self.S1velj1.get()),"q1"))        
+        self.S1buttonj1c.bind("<ButtonPress-1>", lambda event: self.pressed(float("-"+self.S1velj1.get()),"q1"))
         self.S1buttonj1w.bind("<ButtonRelease-1>", lambda event: self.unpressed())
         self.S1buttonj1c.bind("<ButtonRelease-1>", lambda event: self.unpressed())                
 
@@ -199,7 +199,10 @@ class ArmTeleop:
         return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
 
     def pressed(self, data, joint, sign = 1):        
-        pass
+        if(joint == "q1"):
+            prev = self.values_map[key]
+            self.angles_map[key] = data
+
 
     def buttonsSection1(self, joint, row, col, desc, val=".2"):
         #exec('self.S1labelj' + str(joint) + ' = Label(self.root, font=("Consolas", 10), width=1, bg="white", bd=0, justify=CENTER, anchor=W)')
@@ -223,11 +226,7 @@ class ArmTeleop:
         self.S1labelj1.config(bg="white")            
         self.S1labelj2.config(bg="white")
         self.S1labelj3.config(bg="white")
-        self.S1labelj4.config(bg="white")
-        self.S1labelj5.config(bg="white")
-        self.S1labelj6.config(bg="white")
-        self.S1labelj7.config(bg="white")  
-        self.S1labelj8.config(bg="white") 
+
     
     def getTxt(self):
         self.publish_angles()
