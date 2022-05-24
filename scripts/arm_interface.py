@@ -35,6 +35,9 @@ class ArmTeleop:
             "q1":0,
             "q2":161,
             "q3":-165,#
+            "q4":0,
+            "q5":0,
+            "q6":0,#
         }        
         
         ### Initialize graph interface
@@ -76,6 +79,24 @@ class ArmTeleop:
         self.S1buttonj3w.bind("<ButtonPress-1>", lambda event: self.pressed(float("-"+self.S1velj3.get()),"q3"))
         self.S1buttonj3w.bind("<ButtonRelease-1>", lambda event: self.unpressed())        
         self.S1buttonj3c.bind("<ButtonRelease-1>", lambda event: self.unpressed())        
+
+        self.buttonsSection1(4, 7, 0, "Servo 1")
+        self.S1buttonj4c.bind("<ButtonPress-1>", lambda event: self.pressed(float(self.S1velj4.get()),"q4"))
+        self.S1buttonj4w.bind("<ButtonPress-1>", lambda event: self.pressed(float("-"+self.S1velj4.get()),"q4"))
+        self.S1buttonj4w.bind("<ButtonRelease-1>", lambda event: self.unpressed())        
+        self.S1buttonj4c.bind("<ButtonRelease-1>", lambda event: self.unpressed())        
+
+        self.buttonsSection1(5, 8, 0, "Servo 2")
+        self.S1buttonj5c.bind("<ButtonPress-1>", lambda event: self.pressed(float(self.S1velj5.get()),"q5"))
+        self.S1buttonj5w.bind("<ButtonPress-1>", lambda event: self.pressed(float("-"+self.S1velj5.get()),"q5"))
+        self.S1buttonj5w.bind("<ButtonRelease-1>", lambda event: self.unpressed())        
+        self.S1buttonj5c.bind("<ButtonRelease-1>", lambda event: self.unpressed())        
+
+        self.buttonsSection1(6, 9, 0, "Servo 3")
+        self.S1buttonj6c.bind("<ButtonPress-1>", lambda event: self.pressed(float(self.S1velj6.get()),"q6"))
+        self.S1buttonj6w.bind("<ButtonPress-1>", lambda event: self.pressed(float("-"+self.S1velj6.get()),"q6"))
+        self.S1buttonj6w.bind("<ButtonRelease-1>", lambda event: self.unpressed())        
+        self.S1buttonj6c.bind("<ButtonRelease-1>", lambda event: self.unpressed())        
 
 
         #POSICIONES
@@ -126,9 +147,9 @@ class ArmTeleop:
         #self.entryandlabelsSection2(1, 4, 4)
 
         self.labelInfo = Label(self.root, font=("Consolas", 11), width=36, bg="white", bd=0, justify=LEFT)
-        txt = "Position X = "+str(round(self.angles_map["q1"],2))+"\n" + "Position Y = "+str(round(self.angles_map["q2"],2))+"\n"+"Position Z = "+str(round(self.angles_map["q3"],2))+"\n"        
+        txt = "Position X = "+str(round(self.angles_map["q1"],2))+"\n" + "Position Y = "+str(round(self.angles_map["q2"],2))+"\n"+"Position Z = "+str(round(self.angles_map["q3"],2))+"\n"+"Servo 1 = "+str(round(self.angles_map["q4"],2))+"\n"+"Servo 2 = "+str(round(self.angles_map["q5"],2))+"\n"+"Servo 3 = "+str(round(self.angles_map["q6"],2))+"\n"            
         self.labelInfo.config(text=txt)
-        self.labelInfo.grid(row=7, column=0, columnspan=4, sticky="nsew")
+        self.labelInfo.grid(row=10, column=0, columnspan=4, sticky="nsew")
                 
         ##### --------------- #####
         self.ArmControlWindow.mainloop()
@@ -204,6 +225,15 @@ class ArmTeleop:
             self.angles_map[joint] += data
         elif(joint == "q3"):            
             self.angles_map[joint] += data
+        elif(joint == "q4"):     
+            print("servo1")       
+            self.angles_map[joint] += data
+        elif(joint == "q5"):   
+            print("servo2")             
+            self.angles_map[joint] += data
+        elif(joint == "q6"):       
+            print("servo3")         
+            self.angles_map[joint] += data
     
         self.labelInfo.config(text=self.getTxt())
 
@@ -234,7 +264,7 @@ class ArmTeleop:
     
     def getTxt(self):
         self.publish_angles()
-        txt = "Position X = "+str(round(self.angles_map["q1"],2))+"\n" + "Position Y = "+str(round(self.angles_map["q2"],2))+"\n"+"Position Z = "+str(round(self.angles_map["q3"],2))+"\n"        
+        txt = "Position X = "+str(round(self.angles_map["q1"],2))+"\n" + "Position Y = "+str(round(self.angles_map["q2"],2))+"\n"+"Position Z = "+str(round(self.angles_map["q3"],2))+"\n"+"Servo 1 = "+str(round(self.angles_map["q4"],2))+"\n"+"Servo 2 = "+str(round(self.angles_map["q5"],2))+"\n"+"Servo 3 = "+str(round(self.angles_map["q6"],2))+"\n"  
         return txt
 
 if __name__ == '__main__':
