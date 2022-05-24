@@ -34,7 +34,7 @@ class ArmTeleop:
         self.angles_map={
             "q1":0,
             "q2":161,
-            "q3":-165.4,#
+            "q3":-165,#
         }        
         
         ### Initialize graph interface
@@ -60,20 +60,20 @@ class ArmTeleop:
         self.labelS1Headers.config(text="Joint        |     Velocity      |    Button Clockwise   |Button Counterclockwise")
         #self.labelS1Headers.grid(row=3, column=0, columnspan=4, sticky="nsew")                
         self.buttonsSection1(1, 4, 0, "Eje 1")
-        self.S1buttonj1w.bind("<ButtonPress-1>", lambda event: self.pressed(float(self.S1velj1.get()),"q1"))        
-        self.S1buttonj1c.bind("<ButtonPress-1>", lambda event: self.pressed(float("-"+self.S1velj1.get()),"q1"))
+        self.S1buttonj1w.bind("<ButtonPress-1>", lambda event: self.pressed(float("-"+self.S1velj1.get()),"q1"))        
+        self.S1buttonj1c.bind("<ButtonPress-1>", lambda event: self.pressed(float(self.S1velj1.get()),"q1"))
         self.S1buttonj1w.bind("<ButtonRelease-1>", lambda event: self.unpressed())
         self.S1buttonj1c.bind("<ButtonRelease-1>", lambda event: self.unpressed())                
 
         self.buttonsSection1(2, 5, 0, "Eje 2","5")
-        self.S1buttonj2c.bind("<ButtonPress-1>", lambda event: self.pressed("q2",1),-1)
-        self.S1buttonj2w.bind("<ButtonPress-1>", lambda event: self.pressed("q2",-1))
+        self.S1buttonj2c.bind("<ButtonPress-1>", lambda event: self.pressed(float(self.S1velj2.get()),"q2"),-1)
+        self.S1buttonj2w.bind("<ButtonPress-1>", lambda event: self.pressed(float("-"+self.S1velj2.get()),"q2"))
         self.S1buttonj2w.bind("<ButtonRelease-1>", lambda event: self.unpressed())        
         self.S1buttonj2c.bind("<ButtonRelease-1>", lambda event: self.unpressed())
 
         self.buttonsSection1(3, 6, 0, "Eje 3")
-        self.S1buttonj3c.bind("<ButtonPress-1>", lambda event: self.pressed("q3",1))
-        self.S1buttonj3w.bind("<ButtonPress-1>", lambda event: self.pressed("q3",-1))
+        self.S1buttonj3c.bind("<ButtonPress-1>", lambda event: self.pressed(float(self.S1velj3.get()),"q3"))
+        self.S1buttonj3w.bind("<ButtonPress-1>", lambda event: self.pressed(float("-"+self.S1velj3.get()),"q3"))
         self.S1buttonj3w.bind("<ButtonRelease-1>", lambda event: self.unpressed())        
         self.S1buttonj3c.bind("<ButtonRelease-1>", lambda event: self.unpressed())        
 
@@ -128,7 +128,7 @@ class ArmTeleop:
         self.labelInfo = Label(self.root, font=("Consolas", 11), width=36, bg="white", bd=0, justify=LEFT)
         txt = "Position X = "+str(round(self.angles_map["q1"],2))+"\n" + "Position Y = "+str(round(self.angles_map["q2"],2))+"\n"+"Position Z = "+str(round(self.angles_map["q3"],2))+"\n"        
         self.labelInfo.config(text=txt)
-        self.labelInfo.grid(row=12, column=0, columnspan=4, sticky="nsew")
+        self.labelInfo.grid(row=7, column=0, columnspan=4, sticky="nsew")
                 
         ##### --------------- #####
         self.ArmControlWindow.mainloop()
@@ -180,13 +180,12 @@ class ArmTeleop:
         q2 = self.angles_map["q2"]
         q3 = self.angles_map["q3"]
 
-        txt = str(q1)+" "+str(q2)+" "+str(q3)+" "+str(q4)
+        txt = str(q1)+" "+str(q2)+" "+str(q3)
         rospy.loginfo(txt)
         self.pub_q1.publish(q1)
         self.pub_q2.publish(q2)
         self.pub_q3.publish(q3)
-        self.pub_q4.publish(q4)
-        self.pub_q_string.publish(txt)
+        #self.pub_q_string.publish(txt)
 
     def qlimit(self, l, val):
         if (val < l[0]):
@@ -198,10 +197,15 @@ class ArmTeleop:
     def my_map(self,in_min, in_max, out_min, out_max, x):
         return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
 
-    def pressed(self, data, joint, sign = 1):        
-        if(joint == "q1"):
-            prev = self.values_map[key]
-            self.angles_map[key] = data
+    def pressed(self, data, joint, sign = 1):      
+        if(joint == "q1"):            
+            self.angles_map[joint] += data
+        elif(joint == "q2"):            
+            self.angles_map[joint] += data
+        elif(joint == "q3"):            
+            self.angles_map[joint] += data
+    
+        self.labelInfo.config(text=self.getTxt())
 
 
     def buttonsSection1(self, joint, row, col, desc, val=".2"):
