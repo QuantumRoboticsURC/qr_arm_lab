@@ -20,6 +20,9 @@ class ArmTeleop:
         self.pub_q1 = rospy.Publisher('arm_lab/joint1', Float64, queue_size=1)
         self.pub_q2 = rospy.Publisher('arm_lab/joint2', Float64, queue_size=1)
         self.pub_q3 = rospy.Publisher('arm_lab/joint3', Float64, queue_size=1)
+        self.pub_q4 = rospy.Publisher('arm_lab/servo1', Float64, queue_size=1)
+        self.pub_q5 = rospy.Publisher('arm_lab/servo2', Float64, queue_size=1)
+        self.pub_q6 = rospy.Publisher('arm_lab/servo3', Float64, queue_size=1)
         
         
         self.blueTec = "#466cbe"#466cbe
@@ -200,12 +203,18 @@ class ArmTeleop:
         q1 = self.angles_map["q1"]
         q2 = self.angles_map["q2"]
         q3 = self.angles_map["q3"]
+        q4 = self.angles_map["q4"]
+        q5 = self.angles_map["q5"]
+        q6 = self.angles_map["q6"]
 
-        txt = str(q1)+" "+str(q2)+" "+str(q3)
+        txt = str(q1)+" "+str(q2)+" "+str(q3)+" "+str(q4)+" "+str(q5)+" "+str(q6)
         rospy.loginfo(txt)
         self.pub_q1.publish(q1)
         self.pub_q2.publish(q2)
         self.pub_q3.publish(q3)
+        self.pub_q4.publish(q1)
+        self.pub_q5.publish(q2)
+        self.pub_q6.publish(q3)
         #self.pub_q_string.publish(txt)
 
     def qlimit(self, l, val):
@@ -226,13 +235,10 @@ class ArmTeleop:
         elif(joint == "q3"):            
             self.angles_map[joint] += data
         elif(joint == "q4"):     
-            print("servo1")       
             self.angles_map[joint] += data
         elif(joint == "q5"):   
-            print("servo2")             
             self.angles_map[joint] += data
         elif(joint == "q6"):       
-            print("servo3")         
             self.angles_map[joint] += data
     
         self.labelInfo.config(text=self.getTxt())
@@ -260,6 +266,9 @@ class ArmTeleop:
         self.S1labelj1.config(bg="white")            
         self.S1labelj2.config(bg="white")
         self.S1labelj3.config(bg="white")
+        self.S1labelj4.config(bg="white")            
+        self.S1labelj5.config(bg="white")
+        self.S1labelj6.config(bg="white")
 
     
     def getTxt(self):
