@@ -19,6 +19,7 @@ class ArmTeleop:
         ### Initialize the publisher for the joints        
         self.pub_q1 = rospy.Publisher('arm_lab/joint1', Float64, queue_size=1)
         self.pub_q2 = rospy.Publisher('arm_lab/joint2', Float64, queue_size=1)
+        #servos
         self.pub_q3 = rospy.Publisher('arm_lab/joint3', Float64, queue_size=1)
         self.pub_q4 = rospy.Publisher('arm_lab/servo1', Float64, queue_size=1)
         self.pub_q5 = rospy.Publisher('arm_lab/servo2', Float64, queue_size=1)
@@ -212,9 +213,9 @@ class ArmTeleop:
         self.pub_q1.publish(q1)
         self.pub_q2.publish(q2)
         self.pub_q3.publish(q3)
-        self.pub_q4.publish(q1)
-        self.pub_q5.publish(q2)
-        self.pub_q6.publish(q3)
+        self.pub_q4.publish(q4)
+        self.pub_q5.publish(q5)
+        self.pub_q6.publish(q6)
         #self.pub_q_string.publish(txt)
 
     def qlimit(self, l, val):
