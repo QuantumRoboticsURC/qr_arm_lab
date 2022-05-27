@@ -18,12 +18,14 @@ class ArmTeleop:
     def __init__(self):        
         ### Initialize the publisher for the joints        
         self.pub_q1 = rospy.Publisher('arm_lab/joint1', Float64, queue_size=1)
-        self.pub_q2 = rospy.Publisher('arm_lab/joint2', Float64, queue_size=1)
+        self.pub_q2 = rospy.Publisher('arm_lab/joint2', Int32, queue_size=1)
         #servos
-        self.pub_q3 = rospy.Publisher('arm_lab/joint3', Float64, queue_size=1)
-        self.pub_q4 = rospy.Publisher('arm_lab/servo1', Float64, queue_size=1)
-        self.pub_q5 = rospy.Publisher('arm_lab/servo2', Float64, queue_size=1)
-        self.pub_q6 = rospy.Publisher('arm_lab/servo3', Float64, queue_size=1)
+        self.pub_q3 = rospy.Publisher('arm_lab/joint3', Int32, queue_size=1)
+        self.pub_q4 = rospy.Publisher('arm_lab/servo1', Int32, queue_size=1)
+        self.pub_q5 = rospy.Publisher('arm_lab/servo2', Int32, queue_size=1)
+        self.pub_q6 = rospy.Publisher('arm_lab/servo3', Int32, queue_size=1)
+        self.pub_q7 = rospy.Publisher('arm_lab/centrifuga', Int32, queue_size=1)
+        self.pub_screenshot = rospy.Publisher('arm_lab/screenshot', String, queue_size=1)
         
         
         self.blueTec = "#466cbe"#466cbe
@@ -42,6 +44,7 @@ class ArmTeleop:
             "q4":0,
             "q5":0,
             "q6":0,#
+            "q7":0,#
         }        
         
         ### Initialize graph interface
@@ -100,7 +103,46 @@ class ArmTeleop:
         self.S1buttonj6c.bind("<ButtonPress-1>", lambda event: self.pressed(float(self.S1velj6.get()),"q6"))
         self.S1buttonj6w.bind("<ButtonPress-1>", lambda event: self.pressed(float("-"+self.S1velj6.get()),"q6"))
         self.S1buttonj6w.bind("<ButtonRelease-1>", lambda event: self.unpressed())        
-        self.S1buttonj6c.bind("<ButtonRelease-1>", lambda event: self.unpressed())        
+        self.S1buttonj6c.bind("<ButtonRelease-1>", lambda event: self.unpressed())    
+
+        self.buttonsSection1(7, 10, 0, "Centrifuga")
+        self.S1buttonj7c.bind("<ButtonPress-1>", lambda event: self.pressed(float(self.S1velj7.get()),"q7"))
+        self.S1buttonj7w.bind("<ButtonPress-1>", lambda event: self.pressed(float("-"+self.S1velj7.get()),"q7"))
+        self.S1buttonj7w.bind("<ButtonRelease-1>", lambda event: self.unpressed())        
+        self.S1buttonj7c.bind("<ButtonRelease-1>", lambda event: self.unpressed())        
+
+        #Screenshot
+        self.S1buttonp8 = Button(self.root, font=("Consolas", 8, "bold"), width=1, bg=self.blueTec, bd=0, justify=CENTER, fg="white")
+        self.S1buttonp8.config(text = "sudan")
+        self.S1buttonp8.grid(row=11, column=0, sticky="nsew", padx=50)
+        self.S1buttonp8.bind("<ButtonPress-1>", lambda event: self.screen("sudan"))
+
+        self.S1buttonp9 = Button(self.root, font=("Consolas", 8, "bold"), width=1, bg=self.blueTec, bd=0, justify=CENTER, fg="white")
+        self.S1buttonp9.config(text = "lugol")
+        self.S1buttonp9.grid(row=11, column=1, sticky="nsew", padx=50)
+        self.S1buttonp9.bind("<ButtonPress-1>", lambda event: self.screen("lugol"))
+
+        self.S1buttonp10 = Button(self.root, font=("Consolas", 8, "bold"), width=1, bg=self.blueTec, bd=0, justify=CENTER, fg="white")
+        self.S1buttonp10.config(text = "biuret")
+        self.S1buttonp10.grid(row=11, column=2, sticky="nsew", padx=50)
+        self.S1buttonp10.bind("<ButtonPress-1>", lambda event: self.screen("biuret"))
+
+        
+        self.S1buttonp11 = Button(self.root, font=("Consolas", 8, "bold"), width=1, bg=self.blueTec, bd=0, justify=CENTER, fg="white")
+        self.S1buttonp11.config(text = "sudan")
+        self.S1buttonp11.grid(row=12, column=0, sticky="nsew", padx=50)
+        self.S1buttonp11.bind("<ButtonPress-1>", lambda event: self.screen("aftersudan"))
+
+        self.S1buttonp12 = Button(self.root, font=("Consolas", 8, "bold"), width=1, bg=self.blueTec, bd=0, justify=CENTER, fg="white")
+        self.S1buttonp12.config(text = "lugol")
+        self.S1buttonp12.grid(row=12, column=1, sticky="nsew", padx=50)
+        self.S1buttonp12.bind("<ButtonPress-1>", lambda event: self.screen("afterlugol"))
+
+        self.S1buttonp13 = Button(self.root, font=("Consolas", 8, "bold"), width=1, bg=self.blueTec, bd=0, justify=CENTER, fg="white")
+        self.S1buttonp13.config(text = "biuret")
+        self.S1buttonp13.grid(row=12, column=2, sticky="nsew", padx=50)
+        self.S1buttonp13.bind("<ButtonPress-1>", lambda event: self.screen("afterbiuret"))
+
 
 
         #POSICIONES
@@ -151,12 +193,15 @@ class ArmTeleop:
         #self.entryandlabelsSection2(1, 4, 4)
 
         self.labelInfo = Label(self.root, font=("Consolas", 11), width=36, bg="white", bd=0, justify=LEFT)
-        txt = "Position X = "+str(round(self.angles_map["q1"],2))+"\n" + "Position Y = "+str(round(self.angles_map["q2"],2))+"\n"+"Position Z = "+str(round(self.angles_map["q3"],2))+"\n"+"Servo 1 = "+str(round(self.angles_map["q4"],2))+"\n"+"Servo 2 = "+str(round(self.angles_map["q5"],2))+"\n"+"Servo 3 = "+str(round(self.angles_map["q6"],2))+"\n"            
+        txt = "Position X = "+str(round(self.angles_map["q1"],2))+"\n" + "Position Y = "+str(round(self.angles_map["q2"],2))+"\n"+"Position Z = "+str(round(self.angles_map["q3"],2))+"\n"+"Servo 1 = "+str(round(self.angles_map["q4"],2))+"\n"+"Servo 2 = "+str(round(self.angles_map["q5"],2))+"\n"+"Servo 3 = "+str(round(self.angles_map["q6"],2))+"\n"+str(round(self.angles_map["q7"],2))        
         self.labelInfo.config(text=txt)
-        self.labelInfo.grid(row=10, column=0, columnspan=4, sticky="nsew")
+        self.labelInfo.grid(row=13, column=0, columnspan=4, sticky="nsew")
                 
         ##### --------------- #####
         self.ArmControlWindow.mainloop()
+
+    def screen(self, data):
+        self.pub_screenshot.publish(data)
 
     def PresionadoDerecha(self, id):
         #print("presionado", id)
@@ -196,9 +241,8 @@ class ArmTeleop:
         self.values_map["joint2"] = y
         self.values_map["joint3"] = z
         self.values_map["joint4"] = phi"""
-        txt = "Position X = "+str(round(self.angles_map["q1"],2))+"\n" + "Position Y = "+str(round(self.angles_map["q2"],2))+"\n"+"Position Z = "+str(round(self.angles_map["q3"],2))+"\n"        
-        self.labelInfo.config(text=self.getTxt())
-        
+        txt = "Position X = "+str(round(self.angles_map["q1"],2))+"\n" + "Position Y = "+str(round(self.angles_map["q2"],2))+"\n"+"Position Z = "+str(round(self.angles_map["q3"],2))+"\n"+str(round(self.angles_map["q7"],2))
+        self.labelInfo.config(text=self.getTxt())    
 
     def publish_angles(self):
         q1 = self.angles_map["q1"]
@@ -207,6 +251,7 @@ class ArmTeleop:
         q4 = self.angles_map["q4"]
         q5 = self.angles_map["q5"]
         q6 = self.angles_map["q6"]
+        q7 = self.angles_map["q7"]
 
         txt = str(q1)+" "+str(q2)+" "+str(q3)+" "+str(q4)+" "+str(q5)+" "+str(q6)
         rospy.loginfo(txt)
@@ -216,6 +261,7 @@ class ArmTeleop:
         self.pub_q4.publish(q4)
         self.pub_q5.publish(q5)
         self.pub_q6.publish(q6)
+        self.pub_q7.publish(q7)
         #self.pub_q_string.publish(txt)
 
     def qlimit(self, l, val):
@@ -229,18 +275,7 @@ class ArmTeleop:
         return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
 
     def pressed(self, data, joint, sign = 1):      
-        if(joint == "q1"):            
-            self.angles_map[joint] += data
-        elif(joint == "q2"):            
-            self.angles_map[joint] += data
-        elif(joint == "q3"):            
-            self.angles_map[joint] += data
-        elif(joint == "q4"):     
-            self.angles_map[joint] += data
-        elif(joint == "q5"):   
-            self.angles_map[joint] += data
-        elif(joint == "q6"):       
-            self.angles_map[joint] += data
+        self.angles_map[joint] += data
     
         self.labelInfo.config(text=self.getTxt())
 
@@ -274,7 +309,7 @@ class ArmTeleop:
     
     def getTxt(self):
         self.publish_angles()
-        txt = "Position X = "+str(round(self.angles_map["q1"],2))+"\n" + "Position Y = "+str(round(self.angles_map["q2"],2))+"\n"+"Position Z = "+str(round(self.angles_map["q3"],2))+"\n"+"Servo 1 = "+str(round(self.angles_map["q4"],2))+"\n"+"Servo 2 = "+str(round(self.angles_map["q5"],2))+"\n"+"Servo 3 = "+str(round(self.angles_map["q6"],2))+"\n"  
+        txt = "Position X = "+str(round(self.angles_map["q1"],2))+"\n" + "Position Y = "+str(round(self.angles_map["q2"],2))+"\n"+"Position Z = "+str(round(self.angles_map["q3"],2))+"\n"+"Servo 1 = "+str(round(self.angles_map["q4"],2))+"\n"+"Servo 2 = "+str(round(self.angles_map["q5"],2))+"\n"+"Servo 3 = "+str(round(self.angles_map["q6"],2))+"\n"+str(round(self.angles_map["q7"],2))        
         return txt
 
 if __name__ == '__main__':
