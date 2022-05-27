@@ -14,9 +14,10 @@ import math
 import numpy
 import cmath
 from playsound import playsound
-import pygame
+
 
 class ArmTeleop:
+
     def __init__(self):        
         ### Initialize the publisher for the joints        
         self.pub_q1 = rospy.Publisher('arm_lab/joint1', Float64, queue_size=1)
@@ -49,7 +50,7 @@ class ArmTeleop:
             "q6":0,#
             "q7":0,#
         }        
-        
+         
 
         ### Initialize graph interface
         self.ArmControlWindow = Tk()
@@ -123,25 +124,28 @@ class ArmTeleop:
         self.S1buttonj7c.bind("<ButtonRelease-1>", lambda event: self.unpressed())        
         i += 1
 
-        #Screenshot
 
+        #Screenshot
+        def play():
+            playsound('ss-sound.mp3')
         #Before
         self.S1buttonp8 = Button(self.root, font=("Consolas", 8, "bold"), width=1, bg=self.gray, bd=0, justify=CENTER, fg="white")
         self.S1buttonp8.config(text = "Before")
         self.S1buttonp8.grid(row=i, column=0, sticky="nsew", padx=50)
         self.S1buttonp8.bind("<ButtonRelease-1>", lambda event: self.unpressed())
 
-        self.S1buttonp9 = Button(self.root, font=("Consolas", 8, "bold"), width=1, bg=self.blueTec, bd=0, justify=CENTER, fg="white")
+        self.S1buttonp9 = Button(self.root, font=("Consolas", 8, "bold"), width=1, bg=self.blueTec, bd=0, justify=CENTER, fg="white", command = play)
         self.S1buttonp9.config(text = "sudan")
         self.S1buttonp9.grid(row=i, column=1, sticky="nsew", padx=50)
         self.S1buttonp9.bind("<ButtonPress-1>", lambda event: self.screen("sudan"))
 
-        self.S1buttonp10 = Button(self.root, font=("Consolas", 8, "bold"), width=1, bg=self.blueTec, bd=0, justify=CENTER, fg="white")
+
+        self.S1buttonp10 = Button(self.root, font=("Consolas", 8, "bold"), width=1, bg=self.blueTec, bd=0, justify=CENTER, fg="white", command = play)
         self.S1buttonp10.config(text = "lugol")
         self.S1buttonp10.grid(row=i, column=2, sticky="nsew", padx=50)
         self.S1buttonp10.bind("<ButtonPress-1>", lambda event: self.screen("lugol"))
 
-        self.S1buttonp11 = Button(self.root, font=("Consolas", 8, "bold"), width=1, bg=self.blueTec, bd=0, justify=CENTER, fg="white")
+        self.S1buttonp11 = Button(self.root, font=("Consolas", 8, "bold"), width=1, bg=self.blueTec, bd=0, justify=CENTER, fg="white", command = play)
         self.S1buttonp11.config(text = "biuret")
         self.S1buttonp11.grid(row=i, column=3, sticky="nsew", padx=50)
         self.S1buttonp11.bind("<ButtonPress-1>", lambda event: self.screen("biuret"))
@@ -152,17 +156,17 @@ class ArmTeleop:
         self.S1buttonp12.grid(row=i, column=0, sticky="nsew", padx=50)
         self.S1buttonp12.bind("<ButtonRelease-1>", lambda event: self.unpressed())
 
-        self.S1buttonp13 = Button(self.root, font=("Consolas", 8, "bold"), width=1, bg=self.blueTec, bd=0, justify=CENTER, fg="white")
+        self.S1buttonp13 = Button(self.root, font=("Consolas", 8, "bold"), width=1, bg=self.blueTec, bd=0, justify=CENTER, fg="white", command = play)
         self.S1buttonp13.config(text = "sudan")
         self.S1buttonp13.grid(row=i, column=1, sticky="nsew", padx=50)
         self.S1buttonp13.bind("<ButtonPress-1>", lambda event: self.screen("aftersudan"))
 
-        self.S1buttonp14 = Button(self.root, font=("Consolas", 8, "bold"), width=1, bg=self.blueTec, bd=0, justify=CENTER, fg="white")
+        self.S1buttonp14 = Button(self.root, font=("Consolas", 8, "bold"), width=1, bg=self.blueTec, bd=0, justify=CENTER, fg="white", command = play)
         self.S1buttonp14.config(text = "lugol")
         self.S1buttonp14.grid(row=i, column=2, sticky="nsew", padx=50)
         self.S1buttonp14.bind("<ButtonPress-1>", lambda event: self.screen("afterlugol"))
 
-        self.S1buttonp15 = Button(self.root, font=("Consolas", 8, "bold"), width=1, bg=self.blueTec, bd=0, justify=CENTER, fg="white")
+        self.S1buttonp15 = Button(self.root, font=("Consolas", 8, "bold"), width=1, bg=self.blueTec, bd=0, justify=CENTER, fg="white", command = play)
         self.S1buttonp15.config(text = "biuret")
         self.S1buttonp15.grid(row=i, column=3, sticky="nsew", padx=50)
         self.S1buttonp15.bind("<ButtonPress-1>", lambda event: self.screen("afterbiuret"))
@@ -225,10 +229,7 @@ class ArmTeleop:
 
     def screen(self, data):
         self.pub_screenshot.publish(data)
-            ###Sound
-        pygame.mixer.music.load('ss-sound.mp3')
-        pygame.mixer.music.play(loops=0)        
-            
+         
 
     def PresionadoDerecha(self, id):
         #print("presionado", id)
