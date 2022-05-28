@@ -22,9 +22,11 @@ def on_new_servo3(data):
 	Serial.write(serial_msg)
 
 def on_new_joint3(data):
-	serial_msg = "0" + str(data.data)
+	serial_msg = cmd_byte_map['joint3'] + struct.pack("<f", data.data)
 	Serial.write(serial_msg)
-	print(serial_msg)
+	"""serial_msg = "0" + str(data.data)
+	Serial.write(serial_msg)
+	print(serial_msg)"""
 
 def on_new_movement(data):
 	serial_msg = cmd_byte_map['movement'] + struct.pack("<f", data.data)
@@ -44,10 +46,10 @@ Serial.port = "/dev/ttyACM0"
 Serial.open()
 
 cmd_byte_map = {
-    'joint3':"0",
+    'joint3': b"\x00",
     'servo1': b"\x01",
     'servo2': b"\x02",
 	'servo3': b"\x03",
-	'movement': b"\x03"
+	'movement': b"\x04"
 }
 rospy.spin()
