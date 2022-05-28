@@ -43,7 +43,7 @@ class ArmTeleop:
         self.angles_map={
             "q1":0,
             "q2":161,
-            "q3":-165,#
+            "q3":0,#
             "q4":0,
             "q5":0,
             "q6":0,#
@@ -95,78 +95,111 @@ class ArmTeleop:
         self.S1buttonj3c.bind("<ButtonRelease-1>", lambda event: self.unpressed())        
         i += 1
 
-        self.buttonsSection1(i-3, i, 0, "Servo 1")
-        self.S1buttonj4c.bind("<ButtonPress-1>", lambda event: self.pressed(float(self.S1velj4.get()),"q4"))
-        self.S1buttonj4w.bind("<ButtonPress-1>", lambda event: self.pressed(float("-"+self.S1velj4.get()),"q4"))
-        self.S1buttonj4w.bind("<ButtonRelease-1>", lambda event: self.unpressed())        
+
+
+
+        self.S1labelj4 = Button(self.root, font=("Consolas", 10), width=1, bg="white", bd=0, anchor=CENTER)
+        self.S1labelj4.config(text="Servo 1")
+        self.S1labelj4.grid(row=7, column=0, columnspan=1, sticky="nsew")               
+        self.S1buttonj4w = Button(self.root, font=("Consolas", 8, "bold"), width=1, bg="#ff523b", bd=0, justify=CENTER, fg="white")
+
+        self.S1buttonj4w.config(text = "Cerrar")
+        self.S1buttonj4w.grid(row=7, column=2, columnspan=1, sticky="nsew")
+        self.S1buttonj4c = Button(self.root, font=("Consolas", 8, "bold"), width=1, bg="#ff523b", bd=0, justify=CENTER, fg="white")
+
+        self.S1buttonj4c.config(text = "Abrir")
+        self.S1buttonj4c.grid(row=7, column=3, columnspan=1, sticky="nsew")
+        self.S1buttonj4w.bind("<ButtonPress-1>", lambda event: self.pressed("-1","q4"))
+        self.S1buttonj4c.bind("<ButtonPress-1>", lambda event: self.pressed("1","q4"))
         self.S1buttonj4c.bind("<ButtonRelease-1>", lambda event: self.unpressed())        
-        i += 1
+        self.S1buttonj4w.bind("<ButtonRelease-1>", lambda event: self.unpressed())
 
-        self.buttonsSection1(i-3, i, 0, "Servo 2")
-        self.S1buttonj5c.bind("<ButtonPress-1>", lambda event: self.pressed(float(self.S1velj5.get()),"q5"))
-        self.S1buttonj5w.bind("<ButtonPress-1>", lambda event: self.pressed(float("-"+self.S1velj5.get()),"q5"))
-        self.S1buttonj5w.bind("<ButtonRelease-1>", lambda event: self.unpressed())        
+
+        self.S1labelj5 = Button(self.root, font=("Consolas", 10), width=1, bg="white", bd=0, anchor=CENTER)
+        self.S1labelj5.config(text="Servo 2")
+        self.S1labelj5.grid(row=8, column=0, columnspan=1, sticky="nsew")               
+        self.S1buttonj5w = Button(self.root, font=("Consolas", 8, "bold"), width=1, bg="#ff523b", bd=0, justify=CENTER, fg="white")
+
+        self.S1buttonj5w.config(text = "Cerrar")
+        self.S1buttonj5w.grid(row=8, column=2, columnspan=1, sticky="nsew")
+        self.S1buttonj5c = Button(self.root, font=("Consolas", 8, "bold"), width=1, bg="#ff523b", bd=0, justify=CENTER, fg="white")
+
+        self.S1buttonj5c.config(text = "Abrir")
+        self.S1buttonj5c.grid(row=8, column=3, columnspan=1, sticky="nsew")
+        self.S1buttonj5w.bind("<ButtonPress-1>", lambda event: self.pressed("-1","q5"))
+        self.S1buttonj5c.bind("<ButtonPress-1>", lambda event: self.pressed("1","q5"))
         self.S1buttonj5c.bind("<ButtonRelease-1>", lambda event: self.unpressed())        
-        i += 1
+        self.S1buttonj5w.bind("<ButtonRelease-1>", lambda event: self.unpressed())
 
-        self.buttonsSection1(i-3, i, 0, "Servo 3")
-        self.S1buttonj6c.bind("<ButtonPress-1>", lambda event: self.pressed(float(self.S1velj6.get()),"q6"))
-        self.S1buttonj6w.bind("<ButtonPress-1>", lambda event: self.pressed(float("-"+self.S1velj6.get()),"q6"))
-        self.S1buttonj6w.bind("<ButtonRelease-1>", lambda event: self.unpressed())        
-        self.S1buttonj6c.bind("<ButtonRelease-1>", lambda event: self.unpressed())    
-        i += 1
 
-        self.buttonsSection1(i-3, i, 0, "Centrifuga")
-        self.S1buttonj7c.bind("<ButtonPress-1>", lambda event: self.pressed(float(self.S1velj7.get()),"q7"))
-        self.S1buttonj7w.bind("<ButtonPress-1>", lambda event: self.pressed(float("-"+self.S1velj7.get()),"q7"))
-        self.S1buttonj7w.bind("<ButtonRelease-1>", lambda event: self.unpressed())        
-        self.S1buttonj7c.bind("<ButtonRelease-1>", lambda event: self.unpressed())        
-        i += 1
+
+        self.S1labelj6 = Button(self.root, font=("Consolas", 10), width=1, bg="white", bd=0, anchor=CENTER)
+        self.S1labelj6.config(text="Servo 3")
+        self.S1labelj6.grid(row=9, column=0, columnspan=1, sticky="nsew")               
+        self.S1buttonj6w = Button(self.root, font=("Consolas", 8, "bold"), width=1, bg="#ff523b", bd=0, justify=CENTER, fg="white")
+
+        self.S1buttonj6w.config(text = "Cerrar")
+        self.S1buttonj6w.grid(row=9, column=2, columnspan=1, sticky="nsew")
+        self.S1buttonj6c = Button(self.root, font=("Consolas", 8, "bold"), width=1, bg="#ff523b", bd=0, justify=CENTER, fg="white")
+
+        self.S1buttonj6c.config(text = "Abrir")
+        self.S1buttonj6c.grid(row=9, column=3, columnspan=1, sticky="nsew")
+        self.S1buttonj6w.bind("<ButtonPress-1>", lambda event: self.pressed("-1","q6"))
+        self.S1buttonj6c.bind("<ButtonPress-1>", lambda event: self.pressed("1","q6"))
+        self.S1buttonj6c.bind("<ButtonRelease-1>", lambda event: self.unpressed())        
+        self.S1buttonj6w.bind("<ButtonRelease-1>", lambda event: self.unpressed())
+
+
+
+
+
+
+       
 
         #Screenshot
 
         #Before
         self.S1buttonp8 = Button(self.root, font=("Consolas", 8, "bold"), width=1, bg=self.gray, bd=0, justify=CENTER, fg="white")
         self.S1buttonp8.config(text = "Before")
-        self.S1buttonp8.grid(row=i, column=0, sticky="nsew", padx=50)
+        self.S1buttonp8.grid(row=10, column=0, sticky="nsew", padx=50)
         self.S1buttonp8.bind("<ButtonRelease-1>", lambda event: self.unpressed())
 
         self.S1buttonp9 = Button(self.root, font=("Consolas", 8, "bold"), width=1, bg=self.blueTec, bd=0, justify=CENTER, fg="white")
         self.S1buttonp9.config(text = "sudan")
-        self.S1buttonp9.grid(row=i, column=1, sticky="nsew", padx=50)
+        self.S1buttonp9.grid(row=10, column=1, sticky="nsew", padx=50)
         self.S1buttonp9.bind("<ButtonPress-1>", lambda event: self.screen("sudan"))
 
         self.S1buttonp10 = Button(self.root, font=("Consolas", 8, "bold"), width=1, bg=self.blueTec, bd=0, justify=CENTER, fg="white")
         self.S1buttonp10.config(text = "lugol")
-        self.S1buttonp10.grid(row=i, column=2, sticky="nsew", padx=50)
+        self.S1buttonp10.grid(row=10, column=2, sticky="nsew", padx=50)
         self.S1buttonp10.bind("<ButtonPress-1>", lambda event: self.screen("lugol"))
 
         self.S1buttonp11 = Button(self.root, font=("Consolas", 8, "bold"), width=1, bg=self.blueTec, bd=0, justify=CENTER, fg="white")
         self.S1buttonp11.config(text = "biuret")
-        self.S1buttonp11.grid(row=i, column=3, sticky="nsew", padx=50)
+        self.S1buttonp11.grid(row=10, column=3, sticky="nsew", padx=50)
         self.S1buttonp11.bind("<ButtonPress-1>", lambda event: self.screen("biuret"))
-        i += 1
+        
         #After
         self.S1buttonp12 = Button(self.root, font=("Consolas", 8, "bold"), width=1, bg=self.gray, bd=0, justify=CENTER, fg="white")
         self.S1buttonp12.config(text = "After")
-        self.S1buttonp12.grid(row=i, column=0, sticky="nsew", padx=50)
+        self.S1buttonp12.grid(row=11, column=0, sticky="nsew", padx=50)
         self.S1buttonp12.bind("<ButtonRelease-1>", lambda event: self.unpressed())
 
         self.S1buttonp13 = Button(self.root, font=("Consolas", 8, "bold"), width=1, bg=self.blueTec, bd=0, justify=CENTER, fg="white")
         self.S1buttonp13.config(text = "sudan")
-        self.S1buttonp13.grid(row=i, column=1, sticky="nsew", padx=50)
+        self.S1buttonp13.grid(row=11, column=1, sticky="nsew", padx=50)
         self.S1buttonp13.bind("<ButtonPress-1>", lambda event: self.screen("aftersudan"))
 
         self.S1buttonp14 = Button(self.root, font=("Consolas", 8, "bold"), width=1, bg=self.blueTec, bd=0, justify=CENTER, fg="white")
         self.S1buttonp14.config(text = "lugol")
-        self.S1buttonp14.grid(row=i, column=2, sticky="nsew", padx=50)
+        self.S1buttonp14.grid(row=11, column=2, sticky="nsew", padx=50)
         self.S1buttonp14.bind("<ButtonPress-1>", lambda event: self.screen("afterlugol"))
 
         self.S1buttonp15 = Button(self.root, font=("Consolas", 8, "bold"), width=1, bg=self.blueTec, bd=0, justify=CENTER, fg="white")
         self.S1buttonp15.config(text = "biuret")
-        self.S1buttonp15.grid(row=i, column=3, sticky="nsew", padx=50)
+        self.S1buttonp15.grid(row=11, column=3, sticky="nsew", padx=50)
         self.S1buttonp15.bind("<ButtonPress-1>", lambda event: self.screen("afterbiuret"))
-        i += 1
+        
 
         #POSICIONES
         self.labelTitleS2 = Label(self.root, font=("Consolas", 12), width=36, bg="white", bd=0, justify=CENTER)
@@ -218,7 +251,7 @@ class ArmTeleop:
         self.labelInfo = Label(self.root, font=("Consolas", 11), width=36, bg="white", bd=0, justify=LEFT)
         txt = "Position X = "+str(round(self.angles_map["q1"],2))+"\n" + "Position Y = "+str(round(self.angles_map["q2"],2))+"\n"+"Position Z = "+str(round(self.angles_map["q3"],2))+"\n"+"Servo 1 = "+str(round(self.angles_map["q4"],2))+"\n"+"Servo 2 = "+str(round(self.angles_map["q5"],2))+"\n"+"Servo 3 = "+str(round(self.angles_map["q6"],2))+"\n"+str(round(self.angles_map["q7"],2))        
         self.labelInfo.config(text=txt)
-        self.labelInfo.grid(row=i, column=0, columnspan=4, sticky="nsew")
+        self.labelInfo.grid(row=12, column=0, columnspan=4, sticky="nsew")
                 
         ##### --------------- #####
         self.ArmControlWindow.mainloop()
