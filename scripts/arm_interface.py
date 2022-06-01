@@ -121,11 +121,25 @@ class ArmTeleop:
         self.S1buttonj6c.bind("<ButtonRelease-1>", lambda event: self.unpressed())        
         i += 1
 
-        self.buttonsSection1(i-3, i, 0, "Centrifuge","1")
-        self.S1buttonj7c.bind("<ButtonPress-1>", lambda event: self.pressed(float(self.S1velj7.get()),"q7"))
-        self.S1buttonj7w.bind("<ButtonPress-1>", lambda event: self.pressed(float("-"+self.S1velj7.get()),"q7"))
-        self.S1buttonj7w.bind("<ButtonRelease-1>", lambda event: self.unpressed())        
-        self.S1buttonj7c.bind("<ButtonRelease-1>", lambda event: self.unpressed())        
+        #self.buttonsSection1(i-3, i, 0, "Centrifuge","1")
+
+
+        self.S1labelj7 = Button(self.root, font=("Consolas", 10), width=1, bg="white", bd=0, anchor=CENTER)
+        self.S1labelj7.config(text="Centrifuge")
+        self.S1labelj7.grid(row=10, column=0, columnspan=1, sticky="nsew")            
+       # self.S1velj7 = Entry(self.root, font=("Consolas", 10), width=1, bg="white", bd=0, justify=CENTER)
+        #self.S1velj7.grid(row=10, column=1, columnspan=1, sticky="nsew")
+        #self.S1velj7.insert(0,0)        
+        self.S1buttonj7w = Button(self.root, font=("Consolas", 8, "bold"), width=1, bg=self.blueTec, bd=0, justify=CENTER, fg="white")
+        self.S1buttonj7w.config(text = "-")
+        self.S1buttonj7w.grid(row=10, column=2, columnspan=1, sticky="nsew")
+        self.S1buttonj7c = Button(self.root, font=("Consolas", 8, "bold"), width=1, bg=self.blueTec, bd=0, justify=CENTER, fg="white")
+        self.S1buttonj7c.config(text = "+")
+        self.S1buttonj7c.grid(row=10, column=3, columnspan=1, sticky="nsew")
+        self.S1buttonj7c.bind("<ButtonPress-1>", lambda event: self.pressed(int("-1") , "q7"))
+        self.S1buttonj7w.bind("<ButtonPress-1>", lambda event: self.pressed(int(1) , "q7"))
+        self.S1buttonj7w.bind("<ButtonRelease-1>", lambda event: self.unpressedj7())        
+        self.S1buttonj7c.bind("<ButtonRelease-1>", lambda event: self.unpressedj7()) 
         i += 1
 
         #Screenshot
@@ -292,12 +306,8 @@ class ArmTeleop:
         elif(joint == "q6"):
             self.pub_q6.publish(self.angles_map["q6"])
         elif(joint == "q7"):
-            self.angles_map[joint] = data
-            if(data < 0):
-                self.pub_q7.publish(-1)
-            else:
-                self.pub_q7.publish(1)
-
+            data*=-1
+            self.pub_q7.publish(data)
         self.labelInfo.config(text=self.getTxt())
 
 
@@ -325,7 +335,11 @@ class ArmTeleop:
         self.S1labelj4.config(bg="white")            
         self.S1labelj5.config(bg="white")
         self.S1labelj6.config(bg="white")
-    
+
+    def unpressedj7(self):
+        self.S1labelj7.config(bg="white")
+        self.pub_q7.publish(0.0)  
+
     def play(self):
         pass
         #playsound('ss-sound.mp3')
