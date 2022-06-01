@@ -1,28 +1,21 @@
 //actualizacion 14 mayo
 #include <Arduino.h>
 #include <Servo.h>
-#include <Adafruit_NeoPixel.h>
 
-#define pinLeftServo 9
-#define pinRightServo 6
-#define pinGripper 10
-#define pinCamara 5
+#define pinJoint3 10
+#define pinServo1 5
+#define pinServo2 6
+#define pinServo3 9
+#define pinStep   2
+#define pinDir    3
 
+int const t_sacudida=1;
 
-// Pin to the Status LED
-#define pinStatusLed 11
-#define NUMPIXELS 64 //Número de píxeles
-#define DELAYVAL 1 //timpo de espera en ms 
-Adafruit_NeoPixel pixels(NUMPIXELS, pinStatusLed, NEO_GRB + NEO_KHZ800);
-
-Servo leftServo; // the servo used to control a camera that can look around the robot
-Servo rightServo;
-Servo gripperServo;
-Servo camServo;
-int last_color = 0;
-long int start;
-long int now;
-int flag = 0;
+Servo joint3Servo;
+Servo servo1Servo;
+Servo servo2Servo;
+Servo servo3Servo;
+int valCentrifuga = 0;
 
 struct DATA {
     float servo1;
@@ -34,143 +27,112 @@ struct DATA {
 
 void setup() {
     Serial.begin(9600);
-    /*leftServo.attach(pinLeftServo);
-    rightServo.attach(pinRightServo);
-    gripperServo.attach(pinGripper);
-    camServo.attach(pinCamara);
-    gripperServo.writeMicroseconds(1500);
-    camServo.write(180);
-    leftServo.write(0);
-    rightServo.write(170);
-    pixels.begin(); // Inicializamos el objeto "pixeles"*/
+    
+    servo1Servo.attach(pinServo1);
+    servo1Servo.write(90);
+    
+    servo2Servo.attach(pinServo2);
+    servo2Servo.write(90);
+
+    servo3Servo.attach(pinServo3);
+    servo3Servo.write(90);
+
+    joint3Servo.attach(pinJoint3);
+    joint3Servo.writeMicroseconds(map(-155,-180,90,2020,1180));
+
+ 
+    pinMode(pinDir, OUTPUT);
+    pinMode(pinStep, OUTPUT);
+    
+    
 }
 
 void loop() {
-    /*pixels.clear(); // Apagamos todos los LEDs
-        if (flag == 0){
-      start = millis ();
-      flag = 1;
-    }
-    now = millis();
-    if (now - start > 2500){
-            float value  = float(analogRead(A7)*25.0/1023);
-      Serial.println("v" + String(value));
-      flag = 0;
-    }*/
     
     if (Serial.available() >= sizeof(uint8_t)) {
         delayMicroseconds(10);
         uint8_t cmd = (uint8_t) Serial.read();
         // SERVO MOTOR COMMAND
-        switch(cmd){
-          case 0:
+        
+          if (cmd == 0) {
             Serial.readBytes((char *) &received.joint3, sizeof(float));
             Serial.print("joint3\n");
             Serial.println((int)received.joint3);
-            int grados=map((int)received.joint3,-90,90,1740,1180);
-            Serial.println(grados);            
-            /*myservo.writeMicroseconds(grados);//
-            Serial.print("joint3");*/
-          break;
-          case 1:
+            //180 deg = 560 ticks  
+            //45 deg = 140 tickks
+            //15 deg = 46
+            //int grados=map((int)received.joint3,-90,90,1740,1180);
+            int grados=map((int)received.joint3,-180,90,2020,1180);
+            if ((int)received.joint3 >= -155 && (int)received.joint3 <= 90){
+
+              Serial.println(grados);            
+              joint3Servo.writeMicroseconds(grados);//
+              Serial.println("joint3");
+              Serial.println();
+            }
+        }
+        
+          else if (cmd == 1){
             Serial.readBytes((char *) &received.servo1, sizeof(float));
-            Serial.print("servo1");
-          break;
-          case 2:
+            int angle=(int)received.servo1;
+             if (angle >= 0 && angle <= 60){
+                servo1Servo.write(angle);
+             }
+            
+        }
+           else if (cmd == 2){
             Serial.readBytes((char *) &received.servo2, sizeof(float));
-            Serial.print("servo2");
-          break;
-          case 3:
+            int angle=(int)received.servo2;
+            if (angle >= 0 && angle <= 70){
+               servo2Servo.write(angle);
+            }
+        }
+        
+           else if (cmd == 3){
             Serial.readBytes((char *) &received.servo3, sizeof(float));
-            Serial.print("servo3");
-          break;
-          case 4:
+            int angle=(int)received.servo3;
+            if (angle >= 0 && angle <= 72){
+              servo3Servo.write(angle);
+            }
+        }
+        
+           else if (cmd == 4){
             Serial.readBytes((char *) &received.movement, sizeof(float));
-            Serial.print("centrifuga");
-          break;
-        }
-  /*        if (cmd == 0) {
-            Serial.readBytes((char *) &received.joint3, sizeof(float));
-            Serial.print("joint3");
-            /*int left_angle=(int)received.servo;
-            int right_angle=170-(int)received.servo;
-            Serial.print("Left Servo: ");
-            Serial.print(left_angle);
-            Serial.print("Right Servo: ");
-            Serial.print(right_angle);
-            leftServo.write(left_angle);
-            rightServo.write(right_angle);*/
-        //}
-        
-        /*// STATUS COMMAND
-        else if (cmd == 2) {
-            Serial.readBytes((char *) &received.status, sizeof(float));
-            if ((int) received.status == 1){
-                last_color = 1;
-                Serial.print("Blue: Teleoperation (Manually driving)");
-                for(int i=0; i<NUMPIXELS; i++) {
-                    pixels.setPixelColor(i, pixels.Color(0, 0, 255));
-                    pixels.show();
-                    delay(DELAYVAL);
-                }
-            }
-            else if ((int) received.status == 2){
-                last_color = 2;
-                Serial.print("Red: Autonomous operation");
-                for(int i=0; i<NUMPIXELS; i++) {
-                    pixels.setPixelColor(i, pixels.Color(255, 0, 0));
-                    pixels.show();
-                    delay(DELAYVAL);
-                }
-            }
-            else if ((int) received.status == 3){
-                Serial.print("# Flashing Green: Successful arrival at a post or passage through a gate");
-                for(int i=0; i<10; i++) {
-                    for(int i=0; i<NUMPIXELS; i++) {
-                    pixels.setPixelColor(i, pixels.Color(0, 0, 0));
-                    pixels.show();
-                    delay(DELAYVAL);
-                    }
-                   
-                    for(int i=0; i<NUMPIXELS; i++) {
-                    pixels.setPixelColor(i, pixels.Color(0, 255, 0));
-                    pixels.show();
-                    delay(DELAYVAL);
-                    }
-                    delay(100);
-                }
-              if (last_color==1){
-                for(int i=0; i<NUMPIXELS; i++) {
-                    pixels.setPixelColor(i, pixels.Color(0, 0, 255));
-                    pixels.show();
-                    delay(DELAYVAL);
-                }
-              }
-              else if (last_color==2){
-                 for(int i=0; i<NUMPIXELS; i++) {
-                    pixels.setPixelColor(i, pixels.Color(255, 0, 0));
-                    pixels.show();
-                    delay(DELAYVAL);
-                }
-              }
-             
-            }
+            Serial.println("entre a centrifuga");
+            int value=(int)received.movement;
+            valCentrifuga = value;            
+
+
+            
         }
         
-        else if (cmd == 3) {
-            Serial.readBytes((char *) &received.gripper, sizeof(float));
-            int gripper_angle=(int)received.gripper;
-            Serial.print("Gripper_Angle: ");
-            Serial.print(gripper_angle);
-            gripperServo.writeMicroseconds(gripper_angle);
-        }
-        
-        else if (cmd == 4){
-            Serial.readBytes((char *) &received.cam, sizeof(float));
-            int cam_angle=(int)received.cam;
-            Serial.print("Cam Angle: ");
-            Serial.print(cam_angle);
-            camServo.write(cam_angle);
-        }*/
     }
+    if (valCentrifuga == 1){
+                   digitalWrite(pinDir,LOW);
+
+                    digitalWrite(pinStep,HIGH);
+                    delay(t_sacudida);
+                    
+                    digitalWrite(pinStep,LOW);
+                    delay(t_sacudida);
+                  
+                 
+            }
+            
+            else if (valCentrifuga == -1){
+              Serial.println("entre a 2");
+                  digitalWrite(pinDir,  HIGH);
+                  digitalWrite(pinStep, HIGH);
+                  delay(t_sacudida);
+                 
+                  digitalWrite(pinStep, LOW);
+                  delay(t_sacudida);
+            }
+            
+            else if (valCentrifuga == 0){
+                Serial.println("entre a 0");
+                  digitalWrite(pinDir,  LOW);
+                  digitalWrite(pinStep, LOW);
+                  delay(t_sacudida);                                  
+            }
 }
