@@ -207,7 +207,6 @@ class ArmTeleop:
         self.labelTitleS2 = Label(self.root, font=("Consolas", 12), width=36, bg="white", bd=0, justify=CENTER)
         self.labelTitleS2.config(text="Direct positions")
         self.labelTitleS2.grid(row=1, column=5, columnspan=4, sticky="nsew")        
-pass
         self.labelTitleS2 = Label(self.root, font=("Consolas", 12), width=36, bg="white", bd=0, justify=CENTER)
         self.labelTitleS2.config(text="Home")
         self.labelTitleS2.grid(row=2, column=5, columnspan=4, sticky="nsew")
