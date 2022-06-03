@@ -17,6 +17,8 @@ aftersudan = 0
 afterlugol = 0
 afterbiuret = 0
 
+generalphotos = 0
+
 def callback(data):   
     global cv_image 
     try:
@@ -27,7 +29,7 @@ def callback(data):
     a = cv.waitKey(1)    
 
 def screenshot(data):
-    global sudan,lugol,biuret,afterbiuret,aftersudan,afterlugol, cv_image
+    global sudan,lugol,biuret,afterbiuret,aftersudan,afterlugol, cv_image, generalphotos
     key = data.data
     if key == "sudan":
         cv.imwrite("/home/arihc/Web_Interface/static/img/sudan"+str(sudan)+".png",cv_image)
@@ -38,6 +40,9 @@ def screenshot(data):
     elif key == "biuret":
         cv.imwrite("/home/arihc/Web_Interface/static/img/biuret"+str(biuret)+".png",cv_image)
         biuret+=1
+    elif key == "general" or key == "general_up:
+        cv.imwrite("/home/arihc/Web_Interface/static/img/general"+str(generalphotos)+".png",cv_image)
+        generalphotos+=1    
     
     # AFTER
     elif key == "aftersudan":

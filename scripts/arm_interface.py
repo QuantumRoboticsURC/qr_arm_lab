@@ -38,7 +38,7 @@ class ArmTeleop:
         self.limits_map = {
             "q1":(-90,90),
             "q2":(0,180),
-            "q3":(-180,90),           
+            "q3":(-155,90),           
             "q4":(0,60),#Derecha 1             Mas grande es cerrado
             "q5":(0,70),#Izquierdo 2  
             "q6":(0,72),#Centro 3
@@ -48,7 +48,7 @@ class ArmTeleop:
         self.angles_map={
             "q1":0,
             "q2":90,
-            "q3":-135,#
+            "q3":0,#-155
             "q4":0,
             "q5":0,
             "q6":0,#
@@ -114,18 +114,32 @@ class ArmTeleop:
         self.S1buttonj5c.bind("<ButtonRelease-1>", lambda event: self.unpressed())        
         i += 1
 
-        self.buttonsSection1(i-3, i, 0, "Servo Right","6")
+        self.buttonsSection1(i-3, i, 0, "Servo Right","5")
         self.S1buttonj6c.bind("<ButtonPress-1>", lambda event: self.pressed(float(self.S1velj6.get()),"q6"))
         self.S1buttonj6w.bind("<ButtonPress-1>", lambda event: self.pressed(float("-"+self.S1velj6.get()),"q6"))
         self.S1buttonj6w.bind("<ButtonRelease-1>", lambda event: self.unpressed())        
         self.S1buttonj6c.bind("<ButtonRelease-1>", lambda event: self.unpressed())        
         i += 1
 
-        self.buttonsSection1(i-3, i, 0, "Centrifuge","1")
-        self.S1buttonj7c.bind("<ButtonPress-1>", lambda event: self.pressed(float(self.S1velj7.get()),"q7"))
-        self.S1buttonj7w.bind("<ButtonPress-1>", lambda event: self.pressed(float("-"+self.S1velj7.get()),"q7"))
-        self.S1buttonj7w.bind("<ButtonRelease-1>", lambda event: self.unpressed())        
-        self.S1buttonj7c.bind("<ButtonRelease-1>", lambda event: self.unpressed())        
+        #self.buttonsSection1(i-3, i, 0, "Centrifuge","1")
+
+
+        self.S1labelj7 = Button(self.root, font=("Consolas", 10), width=1, bg="white", bd=0, anchor=CENTER)
+        self.S1labelj7.config(text="Centrifuge")
+        self.S1labelj7.grid(row=10, column=0, columnspan=1, sticky="nsew")            
+       # self.S1velj7 = Entry(self.root, font=("Consolas", 10), width=1, bg="white", bd=0, justify=CENTER)
+        #self.S1velj7.grid(row=10, column=1, columnspan=1, sticky="nsew")
+        #self.S1velj7.insert(0,0)        
+        self.S1buttonj7w = Button(self.root, font=("Consolas", 8, "bold"), width=1, bg=self.blueTec, bd=0, justify=CENTER, fg="white")
+        self.S1buttonj7w.config(text = "-")
+        self.S1buttonj7w.grid(row=10, column=2, columnspan=1, sticky="nsew")
+        self.S1buttonj7c = Button(self.root, font=("Consolas", 8, "bold"), width=1, bg=self.blueTec, bd=0, justify=CENTER, fg="white")
+        self.S1buttonj7c.config(text = "+")
+        self.S1buttonj7c.grid(row=10, column=3, columnspan=1, sticky="nsew")
+        self.S1buttonj7c.bind("<ButtonPress-1>", lambda event: self.pressed(int("-1") , "q7"))
+        self.S1buttonj7w.bind("<ButtonPress-1>", lambda event: self.pressed(int(1) , "q7"))
+        self.S1buttonj7w.bind("<ButtonRelease-1>", lambda event: self.unpressedj7())        
+        self.S1buttonj7c.bind("<ButtonRelease-1>", lambda event: self.unpressedj7()) 
         i += 1
 
         #Screenshot
@@ -176,11 +190,24 @@ class ArmTeleop:
         self.S1buttonp15.bind("<ButtonPress-1>", lambda event: self.screen("afterbiuret"))
         i += 1
 
+        self.S1buttonp15 = Button(self.root, font=("Consolas", 8, "bold"), width=1, bg=self.blueTec, bd=0, justify=CENTER, fg="white")
+        self.S1buttonp15.config(text = "GENERAL PHOTO")
+        self.S1buttonp15.grid(row=i, column=1, sticky="nsew", padx=50)
+        self.S1buttonp15.bind("<ButtonPress-1>", lambda event: self.screen("general"))
+
+        self.S1buttonp15 = Button(self.root, font=("Consolas", 8, "bold"), width=1, bg=self.blueTec, bd=0, justify=CENTER, fg="white")
+        self.S1buttonp15.config(text = "GENERAL UP")
+        self.S1buttonp15.grid(row=i, column=2, sticky="nsew", padx=50)
+        self.S1buttonp15.bind("<ButtonPress-1>", lambda event: self.screen("general_up"))
+        i += 1
+
+        
+
         #POSICIONES
         self.labelTitleS2 = Label(self.root, font=("Consolas", 12), width=36, bg="white", bd=0, justify=CENTER)
         self.labelTitleS2.config(text="Direct positions")
         self.labelTitleS2.grid(row=1, column=5, columnspan=4, sticky="nsew")        
-
+pass
         self.labelTitleS2 = Label(self.root, font=("Consolas", 12), width=36, bg="white", bd=0, justify=CENTER)
         self.labelTitleS2.config(text="Home")
         self.labelTitleS2.grid(row=2, column=5, columnspan=4, sticky="nsew")
@@ -236,19 +263,64 @@ class ArmTeleop:
         self.play()         
 
     def PresionadoDerecha(self, id):
+        """
+        self.pub_q1 = rospy.Publisher('arm_lab/joint1', Float64, queue_size=1)
+        self.pub_q2 = rospy.Publisher('arm_lab/joint2_lab', Float64, queue_size=1)
+        #servos
+        self.pub_q3 = rospy.Publisher('arm_lab/joint3', Int32, queue_size=1)
+        self.pub_q4 = rospy.Publisher('arm_lab/servo1', Int32, queue_size=1)
+        self.pub_q5 = rospy.Publisher('arm_lab/servo2', Int32, queue_size=1)
+        self.pub_q6 = rospy.Publisher('arm_lab/servo3', Int32, queue_size=1)
+        self.pub_q7 = rospy.Publisher('arm_lab/centrifuga', Int32, queue_size=1)
+        """
         self.pub_q1.publish(self.angles_map["q1"])
         if(id == "Home"):
-            pass
+            #self.angles_map[joint] = self.qlimit(self.limits_map[joint],self.angles_map[joint])
+            self.angles_map["q1"] = 0
+            self.angles_map["q2"] = 90
+            self.angles_map["q3"] = 0#-155
+            self.angles_map["q4"] = 0
+            self.angles_map["q5"] = 0
+            self.angles_map["q6"] = 0            
         elif(id == "GroundExtraction"):
-            pass
+            self.angles_map["q1"] = 0
+            self.angles_map["q2"] = 0
+            self.angles_map["q3"] = -50#-87.4
         elif(id == "Intermediate"):
-            pass
+            self.angles_map["q1"] = 0
+            self.angles_map["q2"] = 90
+            self.angles_map["q3"] = 0
+            self.angles_map["q4"] = 0
+            self.angles_map["q5"] = 0
+            self.angles_map["q6"] = 0
         elif (id == "Position1"):
-            pass
+            self.angles_map["q1"] = 0
+            self.angles_map["q2"] = 90
+            self.angles_map["q3"] = 0
+            self.angles_map["q4"] = 0
+            self.angles_map["q5"] = 0
+            self.angles_map["q6"] = 0
         elif (id == "Position2"):
-            pass
+            self.angles_map["q1"] = 0
+            self.angles_map["q2"] = 90
+            self.angles_map["q3"] = 0
+            self.angles_map["q4"] = 0
+            self.angles_map["q5"] = 0
+            self.angles_map["q6"] = 0
         elif (id == "Position3"):
-            pass
+            self.angles_map["q1"] = 0
+            self.angles_map["q2"] = 90
+            self.angles_map["q3"] = 0
+            self.angles_map["q4"] = 0
+            self.angles_map["q5"] = 0
+            self.angles_map["q6"] = 0
+        
+        self.pub_q1.publish(self.angles_map["q1"])
+        self.pub_q2.publish(self.angles_map["q2"])
+        self.pub_q3.publish(self.angles_map["q3"])
+        self.pub_q4.publish(self.angles_map["q4"])
+        self.pub_q5.publish(self.angles_map["q5"])
+        self.pub_q6.publish(self.angles_map["q6"])
 
         txt = "Position X = "+str(round(self.angles_map["q1"],2))+"\n" + "Position Y = "+str(round(self.angles_map["q2"],2))+"\n"+"Position Z = "+str(round(self.angles_map["q3"],2))+"\n"+str(round(self.angles_map["q7"],2))
         self.labelInfo.config(text=self.getTxt())    
@@ -277,8 +349,12 @@ class ArmTeleop:
         return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
 
     def pressed(self, data, joint, sign = 1):      
-        self.angles_map[joint] += data
-        self.angles_map[joint] = self.qlimit(self.limits_map[joint],self.angles_map[joint])
+        if (joint != "q7"):
+            self.angles_map[joint] += data
+            self.angles_map[joint] = self.qlimit(self.limits_map[joint],self.angles_map[joint])
+        else:
+            data*=-1
+            self.angles_map[joint] = data
         if(joint == "q1"):
             self.pub_q1.publish(self.angles_map["q1"])
         elif(joint == "q2"):
@@ -291,13 +367,8 @@ class ArmTeleop:
             self.pub_q5.publish(self.angles_map["q5"])
         elif(joint == "q6"):
             self.pub_q6.publish(self.angles_map["q6"])
-        elif(joint == "q7"):
-            self.angles_map[joint] = data
-            if(data < 0):
-                self.pub_q7.publish(-1)
-            else:
-                self.pub_q7.publish(1)
-
+        elif(joint == "q7"):            
+            self.pub_q7.publish(data)
         self.labelInfo.config(text=self.getTxt())
 
 
@@ -325,7 +396,13 @@ class ArmTeleop:
         self.S1labelj4.config(bg="white")            
         self.S1labelj5.config(bg="white")
         self.S1labelj6.config(bg="white")
-    
+
+    def unpressedj7(self):
+        self.angles_map["q7"] = 0
+        self.labelInfo.config(text=self.getTxt())
+        self.S1labelj7.config(bg="white")
+        self.pub_q7.publish(0.0)  
+
     def play(self):
         pass
         #playsound('ss-sound.mp3')
