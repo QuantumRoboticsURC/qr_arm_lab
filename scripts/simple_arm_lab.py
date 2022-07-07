@@ -41,7 +41,7 @@ subscriber_joint3 = rospy.Subscriber("arm_lab/centrifuga", Int32, on_new_movemen
 
 baudrate = (9600)
 Serial = serial.Serial(baudrate=baudrate)
-Serial.port = "/dev/ttyUSB0"
+Serial.port = "/dev/ttyUSB2"
 Serial.open()
 
 cmd_byte_map = {

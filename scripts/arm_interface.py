@@ -20,8 +20,8 @@ class ArmTeleop:
 
     def __init__(self):        
         ### Initialize the publisher for the joints        
-        self.pub_q1 = rospy.Publisher('arm_lab/joint1', Float64, queue_size=1)
-        self.pub_q2 = rospy.Publisher('arm_lab/joint2_lab', Float64, queue_size=1)
+        self.pub_q1 = rospy.Publisher('arm_teleop/joint1', Float64, queue_size=1)
+        self.pub_q2 = rospy.Publisher('arm_teleop/joint2_lab', Float64, queue_size=1)
         #servos
         self.pub_q3 = rospy.Publisher('arm_lab/joint3', Int32, queue_size=1)
         self.pub_q4 = rospy.Publisher('arm_lab/servo1', Int32, queue_size=1)
@@ -36,19 +36,19 @@ class ArmTeleop:
         self.gray = "#676c78"
 
         self.limits_map = {
-            "q1":(-90,90),
-            "q2":(0,180),
+            "q1":(-180,0),
+            "q2":(-8,164),
             "q3":(-155,90),           
-            "q4":(0,60),#Derecha 1             Mas grande es cerrado
-            "q5":(0,70),#Izquierdo 2  
-            "q6":(0,72),#Centro 3
+            "q4":(0,120),#Derecha 1             Mas grande es cerrado
+            "q5":(0,80),#Izquierdo 2  
+            "q6":(0,110),#Centro 3
             "q7":(-10,10),
         }
 
         self.angles_map={
             "q1":0,
             "q2":90,
-            "q3":0,#-155
+            "q3":-155,#-155
             "q4":0,
             "q5":0,
             "q6":0,#
@@ -79,21 +79,21 @@ class ArmTeleop:
         self.labelS1Headers.config(text="Joint        |     Velocity      |    Button Clockwise   |Button Counterclockwise")
         #self.labelS1Headers.grid(row=3, column=0, columnspan=4, sticky="nsew")                
         i = 4
-        self.buttonsSection1(i-3, 4, 0, "Rotation","5")
+        self.buttonsSection1(i-3, 4, 0, "Rotation","1")
         self.S1buttonj1w.bind("<ButtonPress-1>", lambda event: self.pressed(float("-"+self.S1velj1.get()),"q1"))        
         self.S1buttonj1c.bind("<ButtonPress-1>", lambda event: self.pressed(float(self.S1velj1.get()),"q1"))
         self.S1buttonj1w.bind("<ButtonRelease-1>", lambda event: self.unpressed())
         self.S1buttonj1c.bind("<ButtonRelease-1>", lambda event: self.unpressed())                
         i += 1
 
-        self.buttonsSection1(i-3, i, 0, "Yellow Jacket Axis 2","5")
+        self.buttonsSection1(i-3, i, 0, "Yellow Jacket Axis 2","1")
         self.S1buttonj2c.bind("<ButtonPress-1>", lambda event: self.pressed(float(self.S1velj2.get()),"q2"),-1)
         self.S1buttonj2w.bind("<ButtonPress-1>", lambda event: self.pressed(float("-"+self.S1velj2.get()),"q2"))
         self.S1buttonj2w.bind("<ButtonRelease-1>", lambda event: self.unpressed())        
         self.S1buttonj2c.bind("<ButtonRelease-1>", lambda event: self.unpressed())
         i += 1
 
-        self.buttonsSection1(i-3, i, 0, "Servo Axis 3","5")
+        self.buttonsSection1(i-3, i, 0, "Servo Axis 3","1")
         self.S1buttonj3c.bind("<ButtonPress-1>", lambda event: self.pressed(float(self.S1velj3.get()),"q3"))
         self.S1buttonj3w.bind("<ButtonPress-1>", lambda event: self.pressed(float("-"+self.S1velj3.get()),"q3"))
         self.S1buttonj3w.bind("<ButtonRelease-1>", lambda event: self.unpressed())        
@@ -216,15 +216,17 @@ class ArmTeleop:
         self.S2buttonp2.grid(row=4, column=5, columnspan=4, sticky="nsew", padx=50)
         self.S2buttonp2.bind("<ButtonPress-1>", lambda event: self.PresionadoDerecha("Home"))
 
-        self.S2buttonp3 = Button(self.root, font=("Consolas", 8, "bold"), width=1, bg=self.blueTec, bd=0, justify=CENTER, fg="white")
-        self.S2buttonp3.config(text = "Ground Extraction")
-        self.S2buttonp3.grid(row=5, column=5, columnspan=4, sticky="nsew", padx=50)
-        self.S2buttonp3.bind("<ButtonPress-1>", lambda event: self.PresionadoDerecha("GroundExtraction"))
-
         self.S2buttonp4 = Button(self.root, font=("Consolas", 8, "bold"), width=1, bg=self.blueTec, bd=0, justify=CENTER, fg="white")
         self.S2buttonp4.config(text = "Intermediate")
-        self.S2buttonp4.grid(row=6, column=5, columnspan=4, sticky="nsew", padx=50)
+        self.S2buttonp4.grid(row=5, column=5, columnspan=4, sticky="nsew", padx=50)
         self.S2buttonp4.bind("<ButtonPress-1>", lambda event: self.PresionadoDerecha("Intermediate"))
+
+        self.S2buttonp3 = Button(self.root, font=("Consolas", 8, "bold"), width=1, bg=self.blueTec, bd=0, justify=CENTER, fg="white")
+        self.S2buttonp3.config(text = "Ground Extraction")
+        self.S2buttonp3.grid(row=6, column=5, columnspan=4, sticky="nsew", padx=50)
+        self.S2buttonp3.bind("<ButtonPress-1>", lambda event: self.PresionadoDerecha("GroundExtraction"))
+
+
 
 
         self.labelTitleS2 = Label(self.root, font=("Consolas", 12), width=36, bg="white", bd=0, justify=CENTER)
@@ -232,19 +234,24 @@ class ArmTeleop:
         self.labelTitleS2.grid(row=7, column=5, columnspan=4, sticky="nsew", padx=50)  
 
         self.S2buttonp2 = Button(self.root, font=("Consolas", 8, "bold"), width=1, bg=self.blueTec, bd=0, justify=CENTER, fg="white")
-        self.S2buttonp2.config(text = "Position 1")
+        self.S2buttonp2.config(text = "Horiizontal")
         self.S2buttonp2.grid(row=8, column=5, columnspan=4, sticky="nsew", padx=50)
-        self.S2buttonp2.bind("<ButtonPress-1>", lambda event: self.PresionadoDerecha("Position1"))
+        self.S2buttonp2.bind("<ButtonPress-1>", lambda event: self.PresionadoDerecha("Horizontal"))
 
         self.S2buttonp3 = Button(self.root, font=("Consolas", 8, "bold"), width=1, bg=self.blueTec, bd=0, justify=CENTER, fg="white")
-        self.S2buttonp3.config(text = "Position 2")
+        self.S2buttonp3.config(text = "Center Servo")
         self.S2buttonp3.grid(row=9, column=5, columnspan=4, sticky="nsew", padx=50)
-        self.S2buttonp3.bind("<ButtonPress-1>", lambda event: self.PresionadoDerecha("Position2"))
+        self.S2buttonp3.bind("<ButtonPress-1>", lambda event: self.PresionadoDerecha("servo1"))
 
         self.S2buttonp4 = Button(self.root, font=("Consolas", 8, "bold"), width=1, bg=self.blueTec, bd=0, justify=CENTER, fg="white")
-        self.S2buttonp4.config(text = "Position 3")
+        self.S2buttonp4.config(text = "Left Servo")
         self.S2buttonp4.grid(row=10, column=5, columnspan=4, sticky="nsew", padx=50)
-        self.S2buttonp4.bind("<ButtonPress-1>", lambda event: self.PresionadoDerecha("Position3"))            
+        self.S2buttonp4.bind("<ButtonPress-1>", lambda event: self.PresionadoDerecha("servo2"))            
+
+        self.S2buttonp4 = Button(self.root, font=("Consolas", 8, "bold"), width=1, bg=self.blueTec, bd=0, justify=CENTER, fg="white")
+        self.S2buttonp4.config(text = "Right Servo")
+        self.S2buttonp4.grid(row=11, column=5, columnspan=4, sticky="nsew", padx=50)
+        self.S2buttonp4.bind("<ButtonPress-1>", lambda event: self.PresionadoDerecha("servo3"))     
 
 
         #self.entryandlabelsSection2(1, 4, 4)
@@ -277,49 +284,35 @@ class ArmTeleop:
             #self.angles_map[joint] = self.qlimit(self.limits_map[joint],self.angles_map[joint])
             self.angles_map["q1"] = 0
             self.angles_map["q2"] = 90
-            self.angles_map["q3"] = 0#-155
-            self.angles_map["q4"] = 0
-            self.angles_map["q5"] = 0
-            self.angles_map["q6"] = 0            
+            self.angles_map["q3"] = -155#-155
         elif(id == "GroundExtraction"):
             self.angles_map["q1"] = 0
-            self.angles_map["q2"] = 0
-            self.angles_map["q3"] = -50#-87.4
+            self.angles_map["q2"] = -8
+            self.angles_map["q3"] = -61
         elif(id == "Intermediate"):
             self.angles_map["q1"] = 0
             self.angles_map["q2"] = 90
-            self.angles_map["q3"] = 0
-            self.angles_map["q4"] = 0
-            self.angles_map["q5"] = 0
-            self.angles_map["q6"] = 0
-        elif (id == "Position1"):
+            self.angles_map["q3"] = -90
+        elif (id == "Horizontal"):
             self.angles_map["q1"] = 0
-            self.angles_map["q2"] = 90
+            self.angles_map["q2"] = 0
             self.angles_map["q3"] = 0
-            self.angles_map["q4"] = 0
-            self.angles_map["q5"] = 0
-            self.angles_map["q6"] = 0
-        elif (id == "Position2"):
-            self.angles_map["q1"] = 0
-            self.angles_map["q2"] = 90
-            self.angles_map["q3"] = 0
-            self.angles_map["q4"] = 0
-            self.angles_map["q5"] = 0
-            self.angles_map["q6"] = 0
-        elif (id == "Position3"):
-            self.angles_map["q1"] = 0
-            self.angles_map["q2"] = 90
-            self.angles_map["q3"] = 0
-            self.angles_map["q4"] = 0
-            self.angles_map["q5"] = 0
-            self.angles_map["q6"] = 0
-        
+        elif (id == "servo1"):
+            self.angles_map["q1"] = -123
+            self.angles_map["q2"] = 139
+            self.angles_map["q3"] = -146
+        elif (id == "servo2"):
+            self.angles_map["q1"] = -95
+            self.angles_map["q2"] = 155
+            self.angles_map["q3"] = -151
+        elif (id == "servo3"):
+            self.angles_map["q1"] = -149
+            self.angles_map["q2"] = 139
+            self.angles_map["q3"] = -141
+      
         self.pub_q1.publish(self.angles_map["q1"])
         self.pub_q2.publish(self.angles_map["q2"])
         self.pub_q3.publish(self.angles_map["q3"])
-        self.pub_q4.publish(self.angles_map["q4"])
-        self.pub_q5.publish(self.angles_map["q5"])
-        self.pub_q6.publish(self.angles_map["q6"])
 
         txt = "Position X = "+str(round(self.angles_map["q1"],2))+"\n" + "Position Y = "+str(round(self.angles_map["q2"],2))+"\n"+"Position Z = "+str(round(self.angles_map["q3"],2))+"\n"+str(round(self.angles_map["q7"],2))
         self.labelInfo.config(text=self.getTxt())    
